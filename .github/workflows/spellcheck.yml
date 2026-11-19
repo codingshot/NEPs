@@ -5,8 +5,14 @@ on:
     branches:
       - master
 
+# Cancel superseded PR checks; keep every non-PR invocation independent.
+concurrency:
+  group: spellcheck.yml-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   misspell:
+    timeout-minutes: 60
     name: runner / misspell
     runs-on: ubuntu-latest
     steps:
